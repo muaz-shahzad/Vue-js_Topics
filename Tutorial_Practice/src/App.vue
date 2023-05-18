@@ -18,7 +18,8 @@
 
   <!-- <Comp_A/> -->
 
-  <Watcher/>
+  <!-- <Watcher/> -->
+  <Balance_Sheet/>
 
 
 
@@ -33,7 +34,7 @@
 
 
 
-import Watcher from './components/Watchers/Watcher.vue';
+// import Watcher from './components/Watchers/Watcher.vue';
 
 // import Comp_A from './components/Non_Props/Comp_A.vue';
 
@@ -53,11 +54,12 @@ import Watcher from './components/Watchers/Watcher.vue';
 // import Parent from './components/Parent_Child/Parent.vue';
 
 // import Loops from './components/Loops.vue';
+import Balance_Sheet from './components/Balance_Sheet/Balance_sheet.vue'
 
 export default {
   name: 'App',
   components: {
-    Watcher
+    Balance_Sheet
 }
 }
 </script>
