@@ -11,10 +11,12 @@
             </thead>
             <tbody>
                 <template v-for="item in flattenBalanceSheetData" :key="item.id">
-                    <tr>
+                    <tr :class="{ 'parent-row': hasIcon(item) }">
                         <td>
-                            <span v-if="hasChildren(item)" @click="toggleCollapse(item)"
-                                :class="{ 'expand-icon': isCollapsed(item), 'collapse-icon': !isCollapsed(item) }"></span>
+                            <span v-if="hasChildren(item)" @click="toggleCollapse(item)" :class="{
+                                    'expand-icon': isCollapsed(item),
+                                    'collapse-icon': !isCollapsed(item),
+                                }"></span>
                         </td>
                         <td :style="{ paddingLeft: getIndentation(item.indentation) }">
                             {{ item.Financial_Account }}
@@ -29,166 +31,57 @@
 </template>
   
 <script>
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+// Function to generate a random integer within a specific range
+function generateRandomBalanceSheetData() {
+    const levels = [1, 2, 3, 4, 5, 6, 7, 8];
+    const parentNames = ["Parent", "Assets", "Head Office", "Property & Equipment", "Long Term Deposit", "Advances, Deposit & Repayments", "Parts"];
+
+    function generateRandomChildren(parent, maxDepth, currentDepth = 1) {
+        if (currentDepth >= maxDepth) {
+            parent.children = [];
+            return;
+        }
+
+        const numChildren = getRandomInt(0, 3);
+
+        parent.children = [];
+        for (let i = 0; i < numChildren; i++) {
+            const child = {
+                id: parent.id * 10 + i,
+                Financial_Account: parentNames[getRandomInt(0, parentNames.length - 1)],
+                Level: levels[levels.indexOf(parent.Level) + 1],
+                Link: "link",
+                children: [],
+            };
+            parent.children.push(child);
+            generateRandomChildren(child, maxDepth, currentDepth + 1);
+        }
+    }
+
+    const rootParent = {
+        id: 1,
+        Financial_Account: "Parent",
+        Level: 1,
+        Link: "link",
+        children: [],
+    };
+
+    generateRandomChildren(rootParent, 4);
+
+    return [rootParent];
+}
+
 export default {
     data() {
         return {
-            balanceSheetData: [
-                {
-                    id: 1,
-                    Financial_Account: "Parent",
-                    Level: 1,
-                    Link: "link",
-                    children: [
-                        {
-                            id: 2,
-                            Financial_Account: "Assets",
-                            Level: 2,
-                            Link: "link",
-                            children: [
-                                {
-                                    id: 3,
-                                    Financial_Account: "Head Office",
-                                    Level: 3,
-                                    Link: "link",
-                                    children: [
-                                        {
-                                            id: 4,
-                                            Financial_Account: "Property & Equipment",
-                                            Level: 5,
-                                            Link: "link",
-                                            children: [
-                                                {
-                                                    id: 5,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 6,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 7,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            id: 4,
-                                            Financial_Account: "Long Term Deposit",
-                                            Level: 5,
-                                            Link: "link",
-                                            children: [
-                                                {
-                                                    id: 5,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 6,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 7,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            id: 4,
-                                            Financial_Account: "Advances, Deposit & Repayments",
-                                            Level: 5,
-                                            Link: "link",
-                                            children: [
-                                                {
-                                                    id: 5,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 6,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                                {
-                                                    id: 7,
-                                                    Financial_Account: "Workshop &",
-                                                    Level: 8,
-                                                    Link: "link",
-                                                    children: [],
-                                                },
-                                            ],
-                                        },
-
-                                    ],
-
-                                },
-                            ],
-
-                        },
-                        {
-                            id: 3,
-                            Financial_Account: "Parts",
-                            Level: 2,
-                            Link: "link",
-                            children: [
-                                {
-                                    id: 4,
-                                    Financial_Account: "Property & Equipment",
-                                    Level: 4,
-                                    Link: "link",
-                                    children: [
-                                        {
-                                            id: 5,
-                                            Financial_Account: "Workshop &",
-                                            Level: 8,
-                                            Link: "link",
-                                            children: [],
-                                        },
-                                        {
-                                            id: 6,
-                                            Financial_Account: "Workshop &",
-                                            Level: 8,
-                                            Link: "link",
-                                            children: [],
-                                        },
-                                        {
-                                            id: 7,
-                                            Financial_Account: "Workshop &",
-                                            Level: 8,
-                                            Link: "link",
-                                            children: [],
-                                        },
-                                    ],
-                                },
-                            ],
-
-                        },
-                    ],
-                },
-            ],
-            collapsedItems: []
+            balanceSheetData: generateRandomBalanceSheetData(), // Generate random balance sheet data
+            collapsedItems: [],
         };
     },
+
 
     computed: {
         flattenBalanceSheetData() {
@@ -210,6 +103,9 @@ export default {
 
             return flattenData;
         },
+        hasIcon() {
+            return (item) => this.hasChildren(item);
+        },
     },
     methods: {
         getIndentation(level) {
@@ -229,6 +125,9 @@ export default {
             } else {
                 this.collapsedItems.push(item);
             }
+        },
+        isParentRow(item) {
+            return item.Level === 1; // Check if the item is a parent row based on its level
         },
     },
 };
@@ -285,6 +184,11 @@ td:first-child {
     font-size: 12px;
     color: #555;
     cursor: pointer;
+}
+
+.parent-row {
+    background-color: #f8f8f8;
+    /* Light grey background color for parent rows */
 }
 </style>
   
